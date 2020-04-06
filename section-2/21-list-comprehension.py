@@ -16,5 +16,5 @@ for friend in friends:
         starts_s.append(friend)
 
 # same as above loop
-starts_s = [friend for friend in friends if friends.startswith('S')]
+starts_s = [friend for friend in friends if friend.startswith('S')]
 print(starts_s)
