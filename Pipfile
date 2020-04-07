@@ -8,6 +8,7 @@ pylint = "*"
 yapf = "*"
 
 [packages]
+flask = "*"
 
 [requires]
 python_version = "3.6"
