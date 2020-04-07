@@ -15,6 +15,7 @@ def make_secure(func):
     
     return secure_function
 
+
 @make_secure
 def get_password(panel):
     if panel == 'admin':
