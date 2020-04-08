@@ -34,10 +34,12 @@ class Item(Resource):
 
     @jwt_required()
     def delete(self, name):
-        # use the global items variable defined above (python will
-        # think me are making a new item variable otherwise)
-        global items
-        items = list(filter(lambda item: item['name'] != name, items))
+        connection = sqlite3.connect(database_location)
+        cursor = connection.cursor()
+        query = "DELETE FROM items WHERE name=?"
+        cursor.execute(query, (name, ))
+        connection.commit()
+        connection.close()
         return {'message': 'Item deleted.'}
 
     @jwt_required()
