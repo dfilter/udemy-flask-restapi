@@ -50,4 +50,4 @@ def read_store_items(name):
     return jsonify(message='Store not found.')
 
 
-app.run()
+app.run(port=5000, debug=True)
