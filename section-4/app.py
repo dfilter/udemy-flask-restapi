@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_jwt import JWT, jwt_required
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 
 from security import authenticate, identity
 
@@ -17,7 +17,7 @@ items = []
 class Item(Resource):
     @jwt_required()
     def delete(self, name):
-        # use the global items variable defined above (python will 
+        # use the global items variable defined above (python will
         # think me are making a new item variable otherwise)
         global items
         items = list(filter(lambda item: item['name'] != name, items))
@@ -44,7 +44,15 @@ class Item(Resource):
 
     @jwt_required()
     def put(self, name):
-        data = request.get_json()
+        # reqparser will make certain fields required in the body of 
+        # the request or in the form data of the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('price',
+                            type=float,
+                            required=True,
+                            help='This field is required.')
+        data = parser.parse_args()
+        
         item = next(filter(lambda item: item['name'] == name, items), None)
         if item is None:
             item = {'name': name, 'price': data['price']}
