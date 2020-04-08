@@ -12,12 +12,17 @@ class Item(Resource):
         pass
 
     def get(self, name):
-        for item in items:
-            if item['name'] == name:
-                return item
-        return {'item': None}, 404
+        # "next()" gives the first time of a list from the filter function
+        item = next(filter(lambda item: item['name'] == name, items), None)
+        return {'item': item}, 200 if item else 404
 
     def post(self, name):
+        if next(filter(lambda item: item['name'] == name, items),
+                None) is not None:
+            return {
+                'message':
+                "An items with name '{}' already exists.".format(name)
+            }, 400
         data = request.get_json()
         item = {'name': name, 'price': data['price']}
         items.append(item)
