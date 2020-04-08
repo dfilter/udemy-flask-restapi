@@ -41,6 +41,15 @@ class Item(Resource):
         connection.commit()
         connection.close()
 
+    @classmethod
+    def update(cls, item):
+        connection = sqlite3.connect(database_location)
+        cursor = connection.cursor()
+        query = "UPDATE items SET price=? WHERE name=?"
+        cursor.execute(query, (item['price'], item['name']))
+        connection.commit()
+        connection.close()
+
     @jwt_required()
     def delete(self, name):
         connection = sqlite3.connect(database_location)
@@ -79,16 +88,21 @@ class Item(Resource):
     @jwt_required()
     def put(self, name):
         data = Item.parser.parse_args()
-        item = next(filter(lambda item: item['name'] == name, items), None)
-        if item is None:
-            item = {'name': name, 'price': data['price']}
+        item = self.find_by_name(name)
+        updated_item = {'name': name, 'price': data['price']}
+        if item:
             try:
-                self.insert(item)
+                self.update(updated_item)
+            except:
+                return {'message': 'An error occurred updating the item.'}, 500
+    
+        else:
+            try:
+                self.insert(updated_item)
             except:
                 return {'message': 'An error occurred inserting the item.'}, 500
-        else:
-            item.update(data)
-        return item
+            
+        return updated_item
 
 
 class Items(Resource):
