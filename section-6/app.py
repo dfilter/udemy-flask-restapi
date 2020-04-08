@@ -4,7 +4,7 @@ from flask import Flask
 from flask_jwt import JWT
 from flask_restful import Api
 
-from models.item import Item, Items
+from resources.item import Item, Items
 from resources.user import UserRegister
 from security import authenticate, identity
 
