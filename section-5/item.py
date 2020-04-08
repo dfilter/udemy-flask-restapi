@@ -19,16 +19,8 @@ class Item(Resource):
                         required=True,
                         help='This field is required.')
 
-    @jwt_required()
-    def delete(self, name):
-        # use the global items variable defined above (python will
-        # think me are making a new item variable otherwise)
-        global items
-        items = list(filter(lambda item: item['name'] != name, items))
-        return {'message': 'Item deleted.'}
-
-    @jwt_required()
-    def get(self, name):
+    @classmethod
+    def find_by_name(cls, name):
         connection = sqlite3.connect(database_location)
         cursor = connection.cursor()
 
@@ -39,20 +31,41 @@ class Item(Resource):
 
         if row:
             return {'item': {'name': row[0], 'price': row[1]}}
+
+    @jwt_required()
+    def delete(self, name):
+        # use the global items variable defined above (python will
+        # think me are making a new item variable otherwise)
+        global items
+        items = list(filter(lambda item: item['name'] != name, items))
+        return {'message': 'Item deleted.'}
+
+    @jwt_required()
+    def get(self, name):
+        item = self.find_by_name(name)
+        if item:
+            return item
         
         return {'message': 'Item not found'}, 404
 
     @jwt_required()
     def post(self, name):
-        item = next(filter(lambda item: item['name'] == name, items), None)
-        if item is not None:
+        if self.find_by_name(name):
             return {
                 'message':
                 "An items with name '{}' already exists.".format(name)
             }, 400
+        
         data = Item.parser.parse_args()
         item = {'name': name, 'price': data['price']}
-        items.append(item)
+
+        connection = sqlite3.connect(database_location)
+        cursor = connection.cursor()
+        query = "INSERT INTO items VALUES (?, ?)"
+        cursor.execute(query, (item['name'], item['price']))
+        connection.commit()
+        connection.close()
+
         return item, 201
 
     @jwt_required()
