@@ -15,6 +15,7 @@ items = []
 
 
 class Item(Resource):
+    @jwt_required()
     def delete(self, name):
         # use the global items variable defined above (python will 
         # think me are making a new item variable otherwise)
@@ -28,6 +29,7 @@ class Item(Resource):
         item = next(filter(lambda item: item['name'] == name, items), None)
         return {'item': item}, 200 if item else 404
 
+    @jwt_required()
     def post(self, name):
         item = next(filter(lambda item: item['name'] == name, items), None)
         if item is not None:
@@ -40,11 +42,20 @@ class Item(Resource):
         items.append(item)
         return item, 201
 
+    @jwt_required()
     def put(self, name):
-        pass
+        data = request.get_json()
+        item = next(filter(lambda item: item['name'] == name, items), None)
+        if item is None:
+            item = {'name': name, 'price': data['price']}
+            items.append(item)
+        else:
+            item.update(data)
+        return item
 
 
 class Items(Resource):
+    @jwt_required()
     def get(self):
         return {'items': items}
 
