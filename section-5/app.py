@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from flask import Flask
 from flask_jwt import JWT
 from flask_restful import Api
@@ -8,6 +10,7 @@ from user import UserRegister
 
 app = Flask(__name__)
 app.secret_key = 'secret-key'
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(hours=12)
 
 api = Api(app)
 # Creates endpoint /auth that returns a jwt token

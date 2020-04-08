@@ -108,4 +108,15 @@ class Item(Resource):
 class Items(Resource):
     @jwt_required()
     def get(self):
+        connection = sqlite3.connect(database_location)
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM items"
+        result = cursor.execute(query)
+        items = []
+        for row in result:
+            items.append({'name': row[0], 'price': [1]})
+        row = result.fetchall()
+        connection.close()
+
         return {'items': items}
