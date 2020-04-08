@@ -1,10 +1,4 @@
-import os
-import sqlite3
-
 from db import db
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-database_location = os.path.join(dir_path, 'data.db')
 
 
 class ItemModel(db.Model):
@@ -23,29 +17,12 @@ class ItemModel(db.Model):
 
     @classmethod
     def find_by_name(cls, name):
-        connection = sqlite3.connect(database_location)
-        cursor = connection.cursor()
+        return cls.query.filter_by(name=name).first()
 
-        query = "SELECT * FROM items WHERE name=?"
-        result = cursor.execute(query, (name, ))
-        row = result.fetchone()
-        connection.close()
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
-        if row:
-            return cls(*row)
-
-    def insert(self):
-        connection = sqlite3.connect(database_location)
-        cursor = connection.cursor()
-        query = "INSERT INTO items VALUES (?, ?)"
-        cursor.execute(query, (self.price, self.name))
-        connection.commit()
-        connection.close()
-
-    def update(self):
-        connection = sqlite3.connect(database_location)
-        cursor = connection.cursor()
-        query = "UPDATE items SET price=? WHERE name=?"
-        cursor.execute(query, (self.price, self.name))
-        connection.commit()
-        connection.close()
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
