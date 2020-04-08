@@ -15,6 +15,14 @@ items = []
 
 
 class Item(Resource):
+    # reqparser will make certain fields required in the body of 
+    # the request or in the form data of the request
+    parser = reqparse.RequestParser()
+    parser.add_argument('price',
+                        type=float,
+                        required=True,
+                        help='This field is required.')
+
     @jwt_required()
     def delete(self, name):
         # use the global items variable defined above (python will
@@ -37,22 +45,14 @@ class Item(Resource):
                 'message':
                 "An items with name '{}' already exists.".format(name)
             }, 400
-        data = request.get_json()
+        data = Item.parser.parse_args()
         item = {'name': name, 'price': data['price']}
         items.append(item)
         return item, 201
 
     @jwt_required()
     def put(self, name):
-        # reqparser will make certain fields required in the body of 
-        # the request or in the form data of the request
-        parser = reqparse.RequestParser()
-        parser.add_argument('price',
-                            type=float,
-                            required=True,
-                            help='This field is required.')
-        data = parser.parse_args()
-        
+        data = Item.parser.parse_args()
         item = next(filter(lambda item: item['name'] == name, items), None)
         if item is None:
             item = {'name': name, 'price': data['price']}
