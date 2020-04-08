@@ -1,18 +1,28 @@
 from flask import Flask, request
+from flask_jwt import JWT, jwt_required
 from flask_restful import Resource, Api
+
+from security import authenticate, identity
 
 app = Flask(__name__)
 app.secret_key = 'secret-key'
 
 api = Api(app)
+# Creates endpoint /auth that returns a jwt token
+jwt = JWT(app, authenticate, identity)
 
 items = []
 
 
 class Item(Resource):
     def delete(self, name):
-        pass
+        # use the global items variable defined above (python will 
+        # think me are making a new item variable otherwise)
+        global items
+        items = list(filter(lambda item: item['name'] != name, items))
+        return {'message': 'Item deleted.'}
 
+    @jwt_required()
     def get(self, name):
         # "next()" gives the first time of a list from the filter function
         item = next(filter(lambda item: item['name'] == name, items), None)
