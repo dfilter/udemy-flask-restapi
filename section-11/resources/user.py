@@ -34,15 +34,15 @@ class UserRegister(Resource):
 
 
 class User(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, user_id):
-        user = UserModel.find_by_id(user_id)
+        user = UserModel.find_by_id(_id=user_id)
         if user:
             return user.json()
         
         return {'message': 'User not found.'}, 404 
 
-    @jwt_required
+    @jwt_required()
     def delete(self, user_id):
         user = UserModel.find_by_id(user_id)
         if user:
