@@ -12,7 +12,6 @@ flask = "*"
 flask-restful = "*"
 flask-jwt = "*"
 flask-sqlalchemy = "*"
-uwsgi = "*"
 
 [requires]
 python_version = "3.6"
