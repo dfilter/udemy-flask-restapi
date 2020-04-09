@@ -10,6 +10,8 @@ from resources.store import Store, Stores
 from resources.user import TokenRefersh, User, UserLogin, UserRegister
 from security import authenticate, identity
 
+BLACKLIST = {2, 3}
+
 app = Flask(__name__)
 app.secret_key = 'secret-key'
 
@@ -19,6 +21,8 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(hours=12)
+app.config['JWT_BLACKLIST_ENABLED'] = False
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
 api = Api(app)
 # no longer creates /auth endpoint
@@ -37,6 +41,13 @@ def user_claims_callback(identity):
         return {'is_admin': True}
 
     return {'is_admin': False}
+
+
+@jwt.token_in_blacklist_loader
+def token_in_blacklist_callback(decrypted_token):
+    """ If the identity of the token bearer is in the blacklist go to 
+    revoked_token_loader"""
+    return decrypted_token['identity'] in BLACKLIST
 
 
 @jwt.expired_token_loader
