@@ -541,39 +541,6 @@
 			"name": "section-6",
 			"item": [
 				{
-					"name": "Read items",
-					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "addTokenTo",
-									"value": "header",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{jwt}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{flask_url}}/items",
-							"host": [
-								"{{flask_url}}"
-							],
-							"path": [
-								"items"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Authenticate",
 					"event": [
 						{
@@ -654,7 +621,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"price\": 15.99\n}",
+							"raw": "{\n\t\"price\": 15.99,\n\t\"store_id\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -711,7 +678,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"price\": 9999.99\n}",
+							"raw": "{\n\t\"price\": 9999.99,\n\t\"store_id\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -754,6 +721,176 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Read items",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{flask_url}}/items",
+							"host": [
+								"{{flask_url}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"chair factory\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{flask_url}}/store/chair factory",
+							"host": [
+								"{{flask_url}}"
+							],
+							"path": [
+								"store",
+								"chair factory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Store",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{flask_url}}/store/chair factory",
+							"host": [
+								"{{flask_url}}"
+							],
+							"path": [
+								"store",
+								"chair factory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Store",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"chair factory\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{flask_url}}/store/chair factory",
+							"host": [
+								"{{flask_url}}"
+							],
+							"path": [
+								"store",
+								"chair factory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Store",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{flask_url}}/store/chair factory",
+							"host": [
+								"{{flask_url}}"
+							],
+							"path": [
+								"store",
+								"chair factory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Stores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{jwt}}"
+							}
+						],
+						"url": {
+							"raw": "{{flask_url}}/stores",
+							"host": [
+								"{{flask_url}}"
+							],
+							"path": [
+								"stores"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -783,13 +920,13 @@
 	],
 	"variable": [
 		{
-			"id": "a06fe5c8-01e5-46dd-beb4-e2657ba2d9e1",
+			"id": "141a8ffe-1ad5-4dee-8c3a-2d9f52ce628e",
 			"key": "flask_url",
 			"value": "127.0.0.1:5000",
 			"type": "string"
 		},
 		{
-			"id": "e29999e1-8cbe-4087-ad16-f2c6adb39dd8",
+			"id": "625b3bb0-26a3-427f-b8bd-8ddc76978085",
 			"key": "jwt",
 			"value": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODYzNjc0NDYsImlhdCI6MTU4NjM2NzE0NiwibmJmIjoxNTg2MzY3MTQ2LCJpZGVudGl0eSI6MX0.WWfxiLshQvvhWakAQL_MfbqyGEzsxzV0W0aK5vkznhY",
 			"type": "string",
