@@ -7,7 +7,7 @@ from flask_restful import Api
 
 from resources.item import Item, Items
 from resources.store import Store, Stores
-from resources.user import UserRegister
+from resources.user import User, UserRegister
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -25,6 +25,7 @@ api = Api(app)
 jwt = JWT(app, authenticate, identity)
 
 api.add_resource(UserRegister, '/register')
+api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(Stores, '/stores')
 api.add_resource(Store, '/store/<string:name>')
 api.add_resource(Items, '/items')
