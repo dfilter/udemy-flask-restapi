@@ -18,6 +18,10 @@ class Item(Resource):
                         type=float,
                         required=True,
                         help='This field is required.')
+    parser.add_argument('store_id',
+                        type=int,
+                        required=True,
+                        help='This field is required.')
 
     @jwt_required()
     def delete(self, name):
@@ -44,7 +48,7 @@ class Item(Resource):
             }, 400
 
         data = Item.parser.parse_args()
-        item = ItemModel(name, data['price'])
+        item = ItemModel(name, **data)
         try:
             item.save_to_db()
         except:
@@ -59,7 +63,7 @@ class Item(Resource):
         if item:
             item.price = data['price']
         else:
-            item = ItemModel(name, data['price'])
+            item = ItemModel(name, **data)
 
         item.save_to_db()
         return item.json()
