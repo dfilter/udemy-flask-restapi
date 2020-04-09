@@ -18,6 +18,12 @@ api = Api(app)
 # Creates endpoint /auth that returns a jwt token
 jwt = JWT(app, authenticate, identity)
 
+
+@app.before_first_request
+def before_first_request():
+    db.create_all()
+
+
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(Items, '/items')
 api.add_resource(UserRegister, '/register')
