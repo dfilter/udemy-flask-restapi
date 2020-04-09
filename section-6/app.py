@@ -5,6 +5,7 @@ from flask_jwt import JWT
 from flask_restful import Api
 
 from resources.item import Item, Items
+from resources.store import Store, Stores
 from resources.user import UserRegister
 from security import authenticate, identity
 
@@ -24,9 +25,12 @@ def before_first_request():
     db.create_all()
 
 
-api.add_resource(Item, '/item/<string:name>')
-api.add_resource(Items, '/items')
 api.add_resource(UserRegister, '/register')
+api.add_resource(Stores, '/stores')
+api.add_resource(Store, '/store/<string:name>')
+api.add_resource(Items, '/items')
+api.add_resource(Item, '/item/<string:name>')
+
 
 if __name__ == '__main__':
     from db import db
