@@ -8,7 +8,7 @@
 5.  The import button is located at the top left, click the button and then select "Udemy-Flask-REST-API.postman_collection.json" in this repo as the file to import
 6.  Test the api!
 
-## Course info:
+## Course Info (As Seen On [udemy.com](https://www.udemy.com/course/rest-api-flask-and-python/)):
 Welcome to one of the best resources online on creating REST APIs. I'm Jose, and I'm a software engineer; here to help you truly understand and develop your skills in web and REST API development with Python, using Flask.
 
 Production-ready REST APIs with Flask
