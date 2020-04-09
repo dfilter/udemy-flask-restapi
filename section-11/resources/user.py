@@ -1,31 +1,28 @@
-import os
-import sqlite3
-
-from flask_jwt import jwt_required
+from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token
 from flask_restful import Resource, reqparse
+from werkzeug.security import safe_str_cmp
 
 from models.user import UserModel
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-database_location = os.path.join(dir_path, 'data.db')
+parser = reqparse.RequestParser()
+parser.add_argument('username',
+                    type=str,
+                    required=True,
+                    help='This field is required.')
+parser.add_argument('password',
+                    type=str,
+                    required=True,
+                    help='This field is required.')
 
 
 class UserRegister(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('username',
-                        type=str,
-                        required=True,
-                        help='This field is required.')
-    parser.add_argument('password',
-                        type=str,
-                        required=True,
-                        help='This field is required.')
-    
     def post(self):
-        data = UserRegister.parser.parse_args()
+        data = parser.parse_args()
 
         if UserModel.find_by_username(data['username']):
-            return {'message': 'A user with that username already exists.'}, 400
+            return {
+                'message': 'A user with that username already exists.'
+            }, 400
 
         user = UserModel(**data)
         user.save_to_db()
@@ -34,15 +31,15 @@ class UserRegister(Resource):
 
 
 class User(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self, user_id):
         user = UserModel.find_by_id(_id=user_id)
         if user:
             return user.json()
-        
-        return {'message': 'User not found.'}, 404 
 
-    @jwt_required()
+        return {'message': 'User not found.'}, 404
+
+    @jwt_required
     def delete(self, user_id):
         user = UserModel.find_by_id(user_id)
         if user:
@@ -50,3 +47,18 @@ class User(Resource):
             return {'message': 'User deleted'}
 
         return {'message': 'User not found.'}, 404
+
+
+class UserLogin(Resource):
+    def post(self):
+        data = parser.parse_args()
+        user = UserModel.find_by_username(data['username'])
+        if user and safe_str_cmp(user.password, data['password']):
+            access_token = create_access_token(identity=user.id, fresh=True)
+            refresh_token = create_refresh_token(user.id)
+            return {
+                'access_token': access_token,
+                'refresh_token': refresh_token
+            }
+
+        return {'message': 'Invalid credentials.'}, 401

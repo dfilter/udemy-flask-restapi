@@ -10,10 +10,9 @@ yapf = "*"
 [packages]
 flask = "*"
 flask-restful = "*"
-flask-jwt = "*"
 flask-sqlalchemy = "*"
 uwsgi = "*"
-psycopg2 = "*"
+flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.6"

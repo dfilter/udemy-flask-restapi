@@ -1,10 +1,4 @@
-import os
-import sqlite3
-
 from db import db
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-database_location = os.path.join(dir_path, 'data.db')
 
 
 class UserModel(db.Model):
