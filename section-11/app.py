@@ -7,7 +7,7 @@ from flask_restful import Api
 
 from resources.item import Item, Items
 from resources.store import Store, Stores
-from resources.user import User, UserLogin, UserRegister
+from resources.user import User, UserLogin, UserRegister, TokenRefersh
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -42,6 +42,7 @@ api.add_resource(Stores, '/stores')
 api.add_resource(Store, '/store/<string:name>')
 api.add_resource(Items, '/items')
 api.add_resource(Item, '/item/<string:name>')
+api.add_resource(TokenRefersh, '/refresh')
 
 if __name__ == '__main__':
     from db import db
