@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 from flask import Flask
@@ -11,7 +12,8 @@ from security import authenticate, identity
 
 app = Flask(__name__)
 app.secret_key = 'secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+# Use Heroku's DATABASE_URL if it is not found use sqlite db
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(hours=12)
 
