@@ -5,12 +5,11 @@ from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
+from blacklist import BLACKLIST
 from resources.item import Item, Items
 from resources.store import Store, Stores
-from resources.user import TokenRefersh, User, UserLogin, UserRegister
-from security import authenticate, identity
-
-BLACKLIST = {2, 3}
+from resources.user import (TokenRefersh, User, UserLogin, UserLogout,
+                            UserRegister)
 
 app = Flask(__name__)
 app.secret_key = 'secret-key'
@@ -47,7 +46,7 @@ def user_claims_callback(identity):
 def token_in_blacklist_callback(decrypted_token):
     """ If the identity of the token bearer is in the blacklist go to 
     revoked_token_loader"""
-    return decrypted_token['identity'] in BLACKLIST
+    return decrypted_token['jti'] in BLACKLIST
 
 
 @jwt.expired_token_loader
@@ -98,6 +97,7 @@ def revoke_token_callback(error):
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
+api.add_resource(UserLogout, '/logout')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(Stores, '/stores')
 api.add_resource(Store, '/store/<string:name>')
